@@ -5,4 +5,5 @@ matplotlib
 standardscaler
 datetime
 scikit-learn
-#-e .
+openpyxl
+-e .
