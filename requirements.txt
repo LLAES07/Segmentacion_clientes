@@ -1,4 +1,8 @@
 pandas
 numpy
 seaborn
--e .
+matplotlib
+standardscaler
+datetime
+scikit-learn
+#-e .
