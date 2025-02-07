@@ -1,5 +1,3 @@
-# Projecto implementación ML
-
 # Segmentación de Clientes: Optimización de Estrategias de Marketing
 
 ## Descripción del Proyecto
