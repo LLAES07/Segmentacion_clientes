@@ -72,13 +72,8 @@ Este proyecto demuestra cómo el uso de técnicas de machine learning no supervi
    git clone https://github.com/LLAES07/project_
    cd project_```
 
-2. **Crea y activa un entorno virtual (opcional pero recomendado):**
-```bash 
-python -m venv venv
-source venv/bin/activate # En Windows: venv\Scripts\activate
-```  
 
-3. **Instala las dependencias: Asegúrate de tener pip actualizado y luego instala todas las dependencias desde el archivo requirements.txt**
+2 **Instala las dependencias: Asegúrate de tener pip actualizado y luego instala todas las dependencias desde el archivo requirements.txt**
 ```bash 
 pip install -r requirements.txt
 
