@@ -6,4 +6,5 @@ standardscaler
 datetime
 scikit-learn
 openpyxl
--e .
+dill
+#-e .

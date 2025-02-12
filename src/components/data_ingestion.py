@@ -4,7 +4,7 @@ from src.exception import CustomExecption
 from src.logger import logging
 import pandas as pd
 from dataclasses import dataclass
-
+from src.components.data_tranformation import DataTransformation
 
 
 @dataclass
@@ -51,3 +51,9 @@ if __name__=="__main__":
 
     obj = DataIngestion()
     obj.inicia_data_ingestion()
+
+    train_path = "artifacts/train.csv"
+    data_transformer = DataTransformation()
+    train_set_cleaned, preprocessor_path = data_transformer.iniciar_transformacion_datos(train_path)
+    print(train_set_cleaned.head())
+    logging.info("Transformación de datos finalizada correctamente.")

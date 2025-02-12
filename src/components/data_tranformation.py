@@ -10,6 +10,7 @@ from sklearn.pipeline import Pipeline
 from sklearn.base import BaseEstimator, TransformerMixin
 from src.exception import CustomExecption
 from src.logger import logging
+from src.utils import save_object
 
 @dataclass
 class DataTransformationConfig:
@@ -170,13 +171,13 @@ class DataTransformation:
             # ColumnTransformer para aplicar StandardScaler solo a las columnas numéricas.
             scaler_transformer = ColumnTransformer(
                 transformers=[
-                    ('scaler', DataFrameStandardScaler(columns=numeric_cols[3:]), numeric_cols)
+                    ('scaler', DataFrameStandardScaler(columns=numeric_cols), numeric_cols)
                 ],
                 remainder='passthrough',
                 verbose_feature_names_out=False  # Conservar los nombres originales
             )
 
-            # Forzar la salida a DataFrame
+            # Forzar la salida a DataFrame (requiere scikit-learn >= 1.2)
             scaler_transformer.set_output(transform="pandas")
 
             final_transformed = scaler_transformer.fit_transform(data_transformed)
@@ -191,6 +192,10 @@ class DataTransformation:
             train_set_cleaned.to_csv('artifacts/train_set_cleaned.csv', index=False)
             logging.info('Train set limpio guardado en artifacts/train_set_cleaned.csv.')
 
+            save_object (
+                self.data_transformation_config.preprocessor_obj_file_path, scaler_transformer
+            )
+
             return train_set_cleaned, self.data_transformation_config.preprocessor_obj_file_path
 
         except Exception as e:
@@ -201,4 +206,4 @@ if __name__ == "__main__":
     data_transformer = DataTransformation()
     train_set_cleaned, preprocessor_path = data_transformer.iniciar_transformacion_datos(train_path)
     print(train_set_cleaned.head())
-    logging.info("Transformación de datos finalizada correctamente.")
+    logging.info(" Transformación de datos finalizada correctamente.")
