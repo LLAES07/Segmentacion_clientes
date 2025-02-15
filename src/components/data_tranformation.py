@@ -49,6 +49,9 @@ class MakePositiveTransformer(BaseEstimator, TransformerMixin):
             self.columns = X.select_dtypes(include=['number']).columns
         for col in self.columns:
             X[col] = X[col].abs()
+
+        X = X.loc[X['price_total']!=0, :]
+        
         return X
 
 
@@ -141,6 +144,9 @@ class DataTransformation:
         self.data_transformation_config = DataTransformationConfig()
 
     def iniciar_transformacion_datos(self, train_path):
+
+
+
         try:
             # Lectura de datos
             train_set = pd.read_csv(train_path)
@@ -155,8 +161,8 @@ class DataTransformation:
             # 4. Creación de columnas RFM
             sequential_pipeline = Pipeline([
                 ('invoice_conversion', InvoiceNoConverter(column='InvoiceNo')),
-                ('make_positive', MakePositiveTransformer(columns=['Quantity', 'price_total'])),
                 ('outlier_removal', IQRRemover(columns=['Quantity', 'price_total'])),
+                ('make_positive', MakePositiveTransformer(columns=['Quantity', 'price_total'])),
                 ('rfm_creator', RFMCreator(invoice_col='InvoiceNo', 
                                            date_col='InvoiceDate', 
                                            customer_col='CustomerID', 
@@ -165,13 +171,16 @@ class DataTransformation:
 
             data_transformed = sequential_pipeline.fit_transform(train_set)
 
+            data_transformed.to_csv('artifacts/data_cleaned_no_scaled.csv', index=False, header=True)
+            logging.info(f'Datos limpios sin escalar y RFM artifacts/data_cleaned.csv. Contiene {data_transformed.shape} ')
+
             # Definir las columnas numéricas a escalar (incluyendo las nuevas columnas RFM)
             numeric_cols = ['Quantity', 'price_total', 'StockCode', 'Recencia', 'Frecuencia', 'Monto']
 
             # ColumnTransformer para aplicar StandardScaler solo a las columnas numéricas.
             scaler_transformer = ColumnTransformer(
                 transformers=[
-                    ('scaler', DataFrameStandardScaler(columns=numeric_cols), numeric_cols)
+                    ('scaler', DataFrameStandardScaler(columns=numeric_cols[2:]), numeric_cols)
                 ],
                 remainder='passthrough',
                 verbose_feature_names_out=False  # Conservar los nombres originales
@@ -180,11 +189,14 @@ class DataTransformation:
             # Forzar la salida a DataFrame (requiere scikit-learn >= 1.2)
             scaler_transformer.set_output(transform="pandas")
 
+            
+
+
             final_transformed = scaler_transformer.fit_transform(data_transformed)
 
             # Guardar DataFrame final en CSV
-            final_transformed.to_csv('artifacts/data_cleaned.csv', index=False, header=True)
-            logging.info('Datos transformados y CSV limpio guardado en artifacts/data_cleaned.csv.')
+            final_transformed.to_csv('artifacts/data_cleaned_scaled.csv', index=False, header=True)
+            logging.info('Datos limpios y transformados artifacts/data_cleaned_scaled.csv.')
 
             # (Opcional) Eliminar columnas no deseadas para el entrenamiento final
             columns_to_drop = ['Unnamed: 0', 'InvoiceNo', 'InvoiceDate', 'CustomerID']

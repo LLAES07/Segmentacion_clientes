@@ -180,11 +180,11 @@ class ModelTrainer:
 if __name__ == "__main__":
     train_path = "artifacts/train_set_cleaned.csv"
     # Ejemplo: Probar sin PCA
-    trainer_no_pca = ModelTrainer(apply_pca=False, k=3, eps=0.5, min_samples=5, optics_min_samples=5, optics_max_eps=0.5)
+    trainer_no_pca = ModelTrainer(apply_pca=False, k=3, eps=0.6, min_samples=3, optics_min_samples=5, optics_max_eps=0.5)
     results_no_pca = trainer_no_pca.iniciar_modelacion(train_path)
     
     # Ejemplo: Probar con PCA (reduciendo a 2 componentes)
-    trainer_pca = ModelTrainer(apply_pca=True, n_components=2, k=3, eps=0.5, min_samples=5, optics_min_samples=5, optics_max_eps=0.5)
+    trainer_pca = ModelTrainer(apply_pca=True, n_components=2, k=3, eps=0.6, min_samples=3, optics_min_samples=5, optics_max_eps=0.5)
     results_pca = trainer_pca.iniciar_modelacion(train_path)
 
     print("Resultados sin PCA:")
